@@ -140,6 +140,20 @@ public:
         return false;
     }
 
+    size_t GetPos(const T& elem, const Hash1 hash1 = Hash1(), const Hash2 hash2 = Hash2()) const {
+        int hash = hash1(elem, _capasity);
+        int step_hash = hash2(elem, _capasity);
+
+        for (int i = 0; _array[hash] != nullptr && i < _capasity; i++){
+            if (_array[hash]->_state && _array[hash]->_value == elem) return hash;
+            hash = (hash + step_hash) % _capasity;
+        } 
+        
+        throw "Element doesn`t exist";
+
+    }
+
+
     void Remove(const T& elem, const Hash1 hash1 = Hash1(), const Hash2 hash2 = Hash2()) {
         int hash = hash1(elem, _capasity);
         int step_hash = hash2(elem, _capasity);

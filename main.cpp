@@ -14,7 +14,7 @@ int main() {
 
     ht.Remove(15.00001);
 
-    if (ht.Find(15.00001)) cout << "Yes" << endl;
+    if (ht.Find(20.00001)) cout << "Yes" << endl;
     else cout << "No" << endl;
 
 }
