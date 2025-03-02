@@ -7,8 +7,7 @@ const double REHASH_COEFF = 1.5;
 const double RESIZE_COEFF = 0.75;
 
 template <typename T>
-string toString(T val)
-{
+string toString(T val) {
     ostringstream strs;
     strs << val;
     return strs.str();
