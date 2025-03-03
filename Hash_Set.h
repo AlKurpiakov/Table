@@ -56,29 +56,29 @@ private:
     
     Node **_array;
     size_t _size;
-    size_t _capasity;
+    size_t _capacity;
     size_t _general_size;
 
 
     inline void Resize(){
-        int old_capasity = _capasity;
-        _capasity *= 2;
+        int old_capacity = _capacity;
+        _capacity *= 2;
         _size = 0;
         _general_size = 0;
-        Node** new_arr = new Node*[_capasity];
+        Node** new_arr = new Node*[_capacity];
         
-        for (int i = 0; i < _capasity; i++)
+        for (int i = 0; i < _capacity; i++)
             new_arr[i] = nullptr;
         
         swap(_array, new_arr);
         
-        for (int i = 0; i < old_capasity; i++){
+        for (int i = 0; i < old_capacity; i++){
             if (new_arr[i] && new_arr[i]->_state){
                 Add(new_arr[i]->_value);
             }
         }
 
-        for (int i = 0; i < old_capasity; ++i)
+        for (int i = 0; i < old_capacity; ++i)
             if (new_arr[i])
                 delete new_arr[i];
         delete [] new_arr;
@@ -89,16 +89,16 @@ private:
 
 public:
     
-    HashSet(size_t capasity):   _capasity(capasity), _size(0),
+    HashSet(size_t capasity):   _capacity(capasity), _size(0),
                                 _general_size(0)
     {   
-        _array = new Node*[_capasity];
-        for (int i = 0; i < _capasity; ++i)
+        _array = new Node*[_capacity];
+        for (int i = 0; i < _capacity; ++i)
             _array[i] = nullptr; 
     }
 
     ~HashSet(){
-        for (int i = 0; i < _capasity; i++){
+        for (int i = 0; i < _capacity; i++){
             delete _array[i];
             _array[i] = nullptr;
         }
@@ -109,44 +109,44 @@ public:
     inline void Rehash(){
         _size = 0;
         _general_size = 0;
-        Node** new_arr = new Node*[_capasity];
+        Node** new_arr = new Node*[_capacity];
         
-        for (int i = 0; i < _capasity; i++)
+        for (int i = 0; i < _capacity; i++)
             new_arr[i] = nullptr;
         
         swap(_array, new_arr);
         
-        for (int i = 0; i < _capasity; i++){
+        for (int i = 0; i < _capacity; i++){
             if (new_arr[i] && new_arr[i]->_state){
                 Add(new_arr[i]->_value);
             }
         }
 
-        for (int i = 0; i < _capasity; ++i)
+        for (int i = 0; i < _capacity; ++i)
             if (new_arr[i])
                 delete new_arr[i];
         delete [] new_arr;
     }
     
     bool Find(const T& elem, const Hash1 hash1 = Hash1(), const Hash2 hash2 = Hash2()) const {
-        int hash = hash1(elem, _capasity);
-        int step_hash = hash2(elem, _capasity);
+        int hash = hash1(elem, _capacity);
+        int step_hash = hash2(elem, _capacity);
 
-        for (int i = 0; _array[hash] != nullptr && i < _capasity; i++){
+        for (int i = 0; _array[hash] != nullptr && i < _capacity; i++){
             if (_array[hash]->_state && _array[hash]->_value == elem) return true;
-            hash = (hash + step_hash) % _capasity;
+            hash = (hash + step_hash) % _capacity;
         } 
 
         return false;
     }
 
     size_t GetPos(const T& elem, const Hash1 hash1 = Hash1(), const Hash2 hash2 = Hash2()) const {
-        int hash = hash1(elem, _capasity);
-        int step_hash = hash2(elem, _capasity);
+        int hash = hash1(elem, _capacity);
+        int step_hash = hash2(elem, _capacity);
 
-        for (int i = 0; _array[hash] != nullptr && i < _capasity; i++){
+        for (int i = 0; _array[hash] != nullptr && i < _capacity; i++){
             if (_array[hash]->_state && _array[hash]->_value == elem) return hash;
-            hash = (hash + step_hash) % _capasity;
+            hash = (hash + step_hash) % _capacity;
         } 
         
         throw "Element doesn`t exist";
@@ -155,31 +155,31 @@ public:
 
 
     void Remove(const T& elem, const Hash1 hash1 = Hash1(), const Hash2 hash2 = Hash2()) {
-        int hash = hash1(elem, _capasity);
-        int step_hash = hash2(elem, _capasity);
-        for (int i = 0; _array[hash] != nullptr && i < _capasity; i++){
+        int hash = hash1(elem, _capacity);
+        int step_hash = hash2(elem, _capacity);
+        for (int i = 0; _array[hash] != nullptr && i < _capacity; i++){
             if (_array[hash]->_state && _array[hash]->_value == elem) {
                 _array[hash]->_state = false;
                 _size--;
                 return;
             }
-            hash = (hash + step_hash) % _capasity;
+            hash = (hash + step_hash) % _capacity;
         }   
         return;
     }
 
     void Add(const T& elem, const Hash1 hash1 = Hash1(), const Hash2 hash2 = Hash2()) {
-        if (_capasity + 1 > (int)(RESIZE_COEFF * _size)) Resize();
+        if (_capacity + 1 > (int)(RESIZE_COEFF * _size)) Resize();
         else if (_general_size > int(REHASH_COEFF * _size)) Rehash();
-        int hash = hash1(elem, _capasity);
-        int step_hash = hash2(elem, _capasity);
+        int hash = hash1(elem, _capacity);
+        int step_hash = hash2(elem, _capacity);
         int first_del = -1;
-        for (int i = 0; _array[hash] != nullptr && i < _capasity; i++){
+        for (int i = 0; _array[hash] != nullptr && i < _capacity; i++){
             if (_array[hash]->_state && _array[hash]->_value == elem) return;
 
             if (!(_array[hash]->_state) && _array[hash]->_value == elem) first_del = hash;
 
-            hash = (hash + step_hash) % _capasity;
+            hash = (hash + step_hash) % _capacity;
         }
 
         if (first_del != -1){
